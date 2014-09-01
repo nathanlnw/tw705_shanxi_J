@@ -1,0 +1,49 @@
+---- Spd_Using Matches (51 in 9 files) ----
+App_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):    if((Systerm_Reset_counter>Max_SystemCounter)&&(Spd_Using<=10))
+App_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):		     Distance_Accumulate(Spd_Using);  	     
+App_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):			if(Spd_Using>50)
+App_gsm.c (bsp\stm32f207vc_tw705\app_712\gsm):					  if(( DataDial.start_dial_counter==593)&&(Spd_Using<=10))
+App_gsm.c (bsp\stm32f207vc_tw705\app_712\gsm):					  if(( DataDial.start_dial_counter==597)&&(Spd_Using<=10)) 
+App_gsm.c (bsp\stm32f207vc_tw705\app_712\gsm):					  if((DataDial.start_dial_counter>600)&&(Spd_Using<=10))   	 
+Device_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):	      if((Spd_Using<70)&&(Sps_larger_5_counter>10)&&(Speed_cacu_BAK>Spd_Using)&&(Speed_cacu_Trigger_Flag==0))     
+Device_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):		   if((Spd_Using>60)&&(Speed_cacu_BAK>60)&&(Sps_larger_5_counter>10))	    
+Device_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):          Speed_cacu_BAK=Spd_Using; 
+GB19056.c (bsp\stm32f207vc_tw705\app_712\drvdata):  if((GB19056.SPK_UnloginWarn.Warn_state_Enable)&&(Spd_Using>50)&&(Sps_larger_5_counter>10)) 
+GB19056.c (bsp\stm32f207vc_tw705\app_712\drvdata):       if((Spd_Using>50)&&(Sps_larger_5_counter>10)&&(Delta_lati<20)&&(Delta_longi<20)&&(GB19056.DoubtData3_triggerFlag==0))  
+GB19056.c (bsp\stm32f207vc_tw705\app_712\drvdata):	   	if(!((Spd_Using>50)&&(Delta_lati<10)&&(Delta_longi<10)))     
+IC_card.c (bsp\stm32f207vc_tw705\app_712\iccard): if((Spd_Using>60)&&(Sps_larger_5_counter>10)) 
+IC_card.c (bsp\stm32f207vc_tw705\app_712\iccard):  if((Spd_Using> 60 )&&(Sps_larger_5_counter>10))	// Spd_Using 单位为0.1 km/h  速度大于6 km/h  认为是行驶
+IC_card.c (bsp\stm32f207vc_tw705\app_712\iccard):			   if((Spd_Using<40)&&(IC_loginState==1))      // 在行驶结束状态下才开始 判断插拔卡 
+IC_card.c (bsp\stm32f207vc_tw705\app_712\iccard):             if((Spd_Using<40)&&(Sps_larger_5_counter==0))      // 在行驶结束状态下才开始 判断插拔卡
+Menu_1_Idle.c (bsp\stm32f207vc_tw705\app_712\lcd):			   if((Spd_Using<=40)&&(Sps_larger_5_counter==0))   //  行驶状态下不打印 
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):u16	    Spd_Using=0;			   //   808协议-> 速度   0.1km/h      当前使用的速度，判断超速疲劳的依据
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):			          Spd_Using=0;
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):			      Spd_Using=Speed_gps;      
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):					    Spd_Using=Speed_gps;
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):				        Spd_Using=Speed_cacu;   
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):				Spd_Using=Speed_gps;    // 用GPS数据计算得的速度 单位0.1km/h
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):			     Spd_Using=Speed_gps;	 
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):	              Spd_Using=Speed_cacu;       
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):    if( Spd_Using <=( JT808Conf_struct.Speed_warn_MAX*10) )
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):	Original_info[Original_info_Wr++]=(u8)(Speed_gps>>8);//(Spd_Using>>8); 
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):	Original_info[Original_info_Wr++]=(u8)(Speed_gps);//Spd_Using;     
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):      Original_info[Original_info_Wr++]=(u8)(Spd_Using>>8); 
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):	  Original_info[Original_info_Wr++]=(u8)(Spd_Using);	   //Spd_Using
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):	  //Original_info[Original_info_Wr++]=(u8)(Speed_cacu);	   //Spd_Using
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):		Original_info[Original_info_Wr++]=(u8)(Speed_gps>>8);//(Spd_Using>>8); 
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):		Original_info[Original_info_Wr++]=(u8)(Speed_gps);//Spd_Using;     
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):    if(Spd_Using>( JT808Conf_struct.Speed_warn_MAX*10) )
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):							 if  ( Spd_Using>( JT808Conf_struct.Speed_warn_MAX*10) )							 	
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):													 if(speed_Exd.current_maxSpd<Spd_Using) //找最大速度
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):														  speed_Exd.current_maxSpd=Spd_Using;
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):												 if(speed_Exd.current_maxSpd<Spd_Using) //找最大速度
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):														  speed_Exd.current_maxSpd=Spd_Using;
+Protocol_808.c (bsp\stm32f207vc_tw705\app_712\protocol_808):                if(Spd_Using>Rail_Cycle.MaxSpd) 
+Protocol_808.h (bsp\stm32f207vc_tw705\app_712\protocol_808):extern 	u16	            Spd_Using;								  //  当前使用的速度 0.1 km/h
+Vdr.c (bsp\stm32f207vc_tw705\app_712\drvdata):			         spd_reg=Spd_Using%10;
+Vdr.c (bsp\stm32f207vc_tw705\app_712\drvdata):					 	  spd_reg=Spd_Using/10+1;
+Vdr.c (bsp\stm32f207vc_tw705\app_712\drvdata):					 	  spd_reg=Spd_Using/10; 
+Vdr.c (bsp\stm32f207vc_tw705\app_712\drvdata):                // VdrData.H_09[6+time_now.min*11+10]=Spd_Using/10;//VdrData.H_09_spd_accumlate/(VdrData.H_09_seconds_counter+1);	
+Vdr.c (bsp\stm32f207vc_tw705\app_712\drvdata):             VdrData.H_09_spd_accumlate+=Spd_Using/10; 
+Vdr.c (bsp\stm32f207vc_tw705\app_712\drvdata):						  VdrData.H_09[6+i*11+10]= Spd_Using;  		  
+Vdr.c (bsp\stm32f207vc_tw705\app_712\drvdata):					        	  VdrData.H_15[13+2*i]=Spd_Using/10;
