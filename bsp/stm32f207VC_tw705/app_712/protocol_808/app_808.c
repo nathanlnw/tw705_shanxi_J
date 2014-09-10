@@ -302,7 +302,7 @@ static void timeout_app(void *  parameter)
     u8  SensorFlag=0,i=0;
 
 
-    
+    GPRS_GSM_PowerOFF_Working();
 	//---------  Step timer
 	Dial_step_Single_10ms_timer();	   	
 	//---------- AT Dial upspeed---------

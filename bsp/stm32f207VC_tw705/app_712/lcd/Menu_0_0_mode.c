@@ -52,12 +52,12 @@ static void keypress(unsigned int key)
 				{
                     if(Vechicle_Info.Vech_Type_Mark==1)  // 两客一危
 					 	{
-	                        // dnsr_main("up.gps960.net"); 
-	                         Socket_main_Set("125.208.20.155:9131");
+	                         dnsr_main("www.tianyuxintong.com"); 
+	                         //Socket_main_Set("125.208.9.110:9131");
 							 if(DataLink_Status()==0)
 							     DataLink_EndFlag=0;
-					 	    // port_main("9131"); 
-					 		 link_mode("1"); 					
+					 	     port_main("9131"); 
+					 		 link_mode("0"); 					
 					 	}
 					 else if(Vechicle_Info.Vech_Type_Mark==2)   //货运
 					 	{

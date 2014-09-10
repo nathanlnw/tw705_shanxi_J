@@ -13,7 +13,7 @@
 #include  "Vdr.h"
 
  
-#define   SYSID            0x563A      //63A    
+#define   SYSID            0x863A      //563A    
                                 /*        
                                                         0x0000   -----   0x00FF  …˙≤˙∫Õ—–∑¢”√
                                                         0x0100   -----   0x0FFF  ≤˙∆∑≥ˆªı”√
@@ -42,7 +42,7 @@ u8      DeviceNumberID[13];//="800130100001";    // ≥µ¡æDeviceID    ---- ∫”±±ÃÏµ
 u8      SimID_12D[13]; // »ÎÕ¯ID  ∫≈¬Î 12 Œª  ◊Œª Œ™ 0
 
 u8          RemoteIP_Dnsr[4]={255,255,255,255}; 
-u8		RemoteIP_main[4]={125,208,20,155};  //{125.208.20.155};ÃÏ”Ó–≈Õ®            
+u8		RemoteIP_main[4]={125,208,9,110};  //{125.208.9.110};ÃÏ”Ó–≈Õ®            
 u16		RemotePort_main= 9131;//ÃÏΩÚ9131;   ∫”±±ÃÏµÿÕ® 8201             //test tianjin     
 u8		RemoteIP_aux[4]={60,28,50,210};    //{60,28,50,210}
 u16		RemotePort_aux=4000; 
@@ -53,7 +53,7 @@ u16     Remote_Link2_Port=9131;
 
 
 u8           APN_String[30]="UNINET"; //"CMNET";   //  ∫”±±ÃÏµÿÕ®  “∆∂Øµƒø®
-u8           DomainNameStr[50]="jt1.gghypt.net"; ;  // ”Ú√˚  ÃÏµÿÕ®up.gps960.com //jt1.gghypt.net 
+u8           DomainNameStr[50]="www.tianyuxintong.com"; ;  // ”Ú√˚  ÃÏµÿÕ®up.gps960.com //jt1.gghypt.net 
 u8           DomainNameStr_aux[50]="jt2.gghypt.net";     //"www.sina.com";//jt2.gghypt.net
 u16         ACC_on_sd_Duration=30;    //  ACC ø™∆Ùµƒ ±∫Ú …œ±®µƒ ±º‰º‰∏Ù  
 u16         ACC_off_sd_Duration=60;    //  ACC πÿ±’ ±∫Ú…œ±®µƒ ±º‰º‰∏Ù  
@@ -1624,7 +1624,8 @@ void DefaultConfig(void)
 void KorH_check(void)  // øÕ‘Àªı‘Àœ‘ æ◊¥Ã¨≤È—Ø
 {
      // ¿‡–Õ≈–∂œ
-		   if((Vechicle_Info.Link_Frist_Mode==1)&&(RemoteIP_main[0]==125)&&(RemoteIP_main[0]==208)&&(RemoteIP_main[0]==20)&&(RemoteIP_main[0]==155))  
+		   if(((Vechicle_Info.Link_Frist_Mode==1)&&(RemoteIP_main[0]==125)&&(RemoteIP_main[0]==208)&&(RemoteIP_main[0]==9)&&(RemoteIP_main[0]==110))\
+		     	||((strcmp(DomainNameStr,"www.tianyuxintong.com")==0)&&(Vechicle_Info.Link_Frist_Mode==0)))
 		      Vechicle_Info.Vech_Type_Mark=1;
 		   else 
 		   if((strcmp(DomainNameStr,"jt1.gghypt.net")==0)&&(Vechicle_Info.Link_Frist_Mode==0)) 
@@ -1635,7 +1636,7 @@ void KorH_check(void)  // øÕ‘Àªı‘Àœ‘ æ◊¥Ã¨≤È—Ø
 /*
 ∂¡≤Œ ˝≈‰÷√Œƒº˛
 */
-	void SysConfiguration(void)
+	void SysConfiguration(void) 
 	{
 			SetConfig();  
 			ReadConfig();

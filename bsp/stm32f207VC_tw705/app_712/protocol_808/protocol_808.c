@@ -1979,8 +1979,6 @@ void Protocol_End(u8 Packet_Type,u8 LinkNum)
     // 4.2   MsgQueue
     WatchDog_Feed();
    Gsm_rxAppData_SemRelease(GPRS_info,GPRS_infoWr_Tx,LinkNum);  
-   //--------消息序号 递增 --------
-   JT808Conf_struct.Msg_Float_ID++;   
   //------------------------------ 
 } 
 //--------------------------------------------------------------------------------------
@@ -2344,8 +2342,8 @@ u8  Stuff_Current_Data_0201H(void)   //   位置信息查询回应
 			 //  附加信息长度
 			 Original_info[Original_info_Wr++]=2;
 			 //  类型
-			 Original_info[Original_info_Wr++]=(u8)(Speed_cacu>>8); 
-			 Original_info[Original_info_Wr++]=(u8)(Speed_cacu);	 
+			 Original_info[Original_info_Wr++]=(u8)(Spd_Using>>8); 
+			 Original_info[Original_info_Wr++]=(u8)(Spd_Using);	 
 		}
 		 /*
 		  //  附加信息 2  -----------------------------    

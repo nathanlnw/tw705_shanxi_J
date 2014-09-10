@@ -97,7 +97,7 @@ void rtthread_startup(void)
  
 	 
     #endif 	 
-   rt_kprintf("\n\r   山西天宇信通 GGHYPT  TW705-BD-- chip:STM32F207  Version 1.0  \r\n ");         
+   rt_kprintf("\n\r   山西天宇信通 GGHYPT  TW705-BD-- chip:STM32F207  2014-9-10 Version 1.1  -FX  \r\n ");         
 	/* show version */
 	rt_show_version(); 
 

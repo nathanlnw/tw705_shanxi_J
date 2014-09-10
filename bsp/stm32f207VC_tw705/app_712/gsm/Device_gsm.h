@@ -53,7 +53,7 @@ typedef   struct
 {
   u8   GSM_PowerEnable;      // 使能开始上电 ，初始化为 1    
   u16  GSM_powerCounter;   //  上电计数器
-  u8   GSM_power_over;     //   1: module on  2:   IMSI get        
+  u8   GSM_power_over;     // 0:start   1: module on  2:   IMSI get    3: power cut  downning       
 } GSM_POWER;
 
 typedef struct
@@ -71,6 +71,8 @@ u8     Initial_step;
 u8     Execute_couter; 
 u8     Execute_enable; 
 u8     cmd_run_once;  
+u8     AT_cmd_sendState;
+u32    AT_cmd_send_timeout;
 
 }COMM_AT; 
 
@@ -194,8 +196,11 @@ extern  u8     GSM_AsciiTx[GSM_AsciiTX_SIZE];
 extern 	GSM_POWER	GSM_PWR;  
 
 
-extern void GSM_CSQ_timeout(void);
+extern void  gsm_power_cut(void);
+extern void  AT_cmd_send_TimeOUT(void);
+extern void  GSM_CSQ_timeout(void);
 extern u8    GSM_CSQ_Query(void);
+extern u8    GSM_Working_State(void);  //  表示GSM ，可以正常工作
 extern void  DataLink_MainSocket_set(u8 *IP, u16  PORT, u8 DebugOUT);
 extern void  DataLink_AuxSocket_set(u8 *IP, u16  PORT,u8 DebugOUT) ;
 extern void  DataLink_IspSocket_set(u8 *IP, u16  PORT,u8 DebugOUT); 
@@ -210,6 +215,8 @@ extern  void  GSM_Buffer_Read_Process(void);
 
 
 extern u8    GPRS_GSM_PowerON(void);   
+extern void  GPRS_GSM_PowerOFF_Working(void);
+extern void  GSM_Module_PowerOFF_Enable(void);
 extern void  Data_Send(u8* DataStr, u16  Datalen,u8  Link_Num);
 extern void  End_Datalink(void);
 extern void  ISP_Timer(void); 
