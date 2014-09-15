@@ -77,7 +77,7 @@ static void keypress(unsigned int key)
                      //  select mode
 					 if(Vechicle_Info.Vech_Type_Mark==1)  //  两客一危
 					 	{
-	                    	 link_mode("1"); 	
+	                    	 link_mode("0");    	
 							 idip("clear");	  
 					 	}
 					 else if(Vechicle_Info.Vech_Type_Mark==2)   //货运
