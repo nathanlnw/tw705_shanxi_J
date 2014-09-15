@@ -914,11 +914,12 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 					    Add_SMS_Ack_Content(sms_ack_data,ACKstate);
 					} 
 				}
+			 //----------------------------------------------------------------------------
+			} 
 		   else
 			{
 			break;
 			}
-		} 
 	}
 }
 
