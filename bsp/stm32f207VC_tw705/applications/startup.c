@@ -97,7 +97,7 @@ void rtthread_startup(void)
  
 	 
     #endif 	 
-   rt_kprintf("\n\r   山西天宇信通 GGHYPT  TW705-BD-- chip:STM32F207  2014-9-15 Version 1.2   \r\n ");         
+   rt_kprintf("\n\r   山西天宇信通 GGHYPT  TW705-BD-- chip:STM32F207  2014-11-26 Version 1.4  gps速度异常处理  默认不加密   \r\n ");         
 	/* show version */
 	rt_show_version(); 
 

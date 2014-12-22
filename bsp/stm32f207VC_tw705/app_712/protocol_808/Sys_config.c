@@ -13,7 +13,7 @@
 #include  "Vdr.h"
 
  
-#define   SYSID            0x563A      //563A     
+#define   SYSID            0xF63B      //563B     
                                 /*        
                                                         0x0000   -----   0x00FF  生产和研发用
                                                         0x0100   -----   0x0FFF  产品出货用
@@ -1194,6 +1194,12 @@ void  FirstRun_Config_Write(void)
  		  //---- add special -----------  
  		  Login_Menu_Flag=0;     //  输入界面为0 
 		  DF_WriteFlashSector(DF_LOGIIN_Flag_offset,0,&Login_Menu_Flag,1); 
+		  Limit_max_SateFlag=1; //使能
+		  DF_WriteFlashSector(DF_LimitSPEED_offset,0,&Limit_max_SateFlag,1); 
+
+		  //  -----信息加密状态 	  
+ 		  INFO_Code_Flag=0;     //  输入界面为0      // 默认不 加密 
+		  DF_WriteFlashSector(DF_INFO_CODE_offset,0,&INFO_Code_Flag,1);  
 		  
 
 }
@@ -1421,6 +1427,8 @@ void SetConfig(void)
 
 		   //------  读取 录入状态-----------
 		   DF_ReadFlash(DF_LOGIIN_Flag_offset,0,&Login_Menu_Flag,1); 
+		   //  -------- 读取加密状态--------
+		   DF_ReadFlash(DF_INFO_CODE_offset,0,&INFO_Code_Flag,1);  
 
 		   //  读取播报状态		   
 		   DF_ReadFlash(DF_WARN_PLAY_Page,0,&Warn_Play_controlBit,1); 
@@ -1433,6 +1441,8 @@ void SetConfig(void)
 		   {
 		              ModuleStatus&=~Status_Pcheck;
            } 
+		    DF_ReadFlash(DF_LimitSPEED_offset,0,&Limit_max_SateFlag,1); 
+		   rt_kprintf("\r\n  Limit_max_stateflag=%d",Limit_max_SateFlag); 
            Rails_Routline_Read();
                  
     rt_kprintf("\r\n Read Config Over \r\n");   
@@ -1615,7 +1625,8 @@ void DefaultConfig(void)
 		  	  rt_kprintf("\r\n		       车台型号: TW705   \r\n"); 
 
           //------- 自动接听方式 -----------           
-		  rt_kprintf("\r\n		        -------自动接听方式:%d    \r\n",JT808Conf_struct.Auto_ATA_flag);      
+		  rt_kprintf("\r\n		        -------自动接听方式:%d     加密状态:%d  \r\n",JT808Conf_struct.Auto_ATA_flag,INFO_Code_Flag);  
+		  
 
 }
 //FINSH_FUNCTION_EXPORT(DefaultConfig, DefaultConfig);     

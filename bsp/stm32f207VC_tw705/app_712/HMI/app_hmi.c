@@ -34,9 +34,11 @@ void Dayin_Fun(u8 dayin_par)
    u32  current_u32time=0;   //  当前的时间
    u32  old2day_u32time=0;   //  前2个日历天的时间    current-2x86400 (172800)
    u32  read_u32time=0;
+   u32  read_u32_ENDTime=0; // 读取记录中结束时间
    u8  i=0,efftive_counter=0,check_limit=0;// check_limit   表示需要检索记录的数目
    u8  print_buf[70];
    u8  leftminute=0; // 当前分钟数值
+   u8  find_chaoshi_record=0;  // 
    
 if(dayin_par==1)
 	{
@@ -84,7 +86,7 @@ if(dayin_par==1)
 			printer((const char *)dayin_chepaifenlei);
 			printer((const char *)dayin_cheliangVIN);
 			printer((const char *)dayin_driver_card);
-		    if(VdrData.H_15[0]==0x02)
+		    if((VdrData.H_15[0]==0x02)&&(Limit_max_SateFlag==0))
               printer("\r\n速度状态: 异常");
 			else
 			  printer("\r\n速度状态: 正常");
@@ -105,31 +107,38 @@ if(dayin_par==1)
 				    memset(drive_illegalstr,0,sizeof(drive_illegalstr));
 		            if(get_11h(i, drive_illegalstr)==0)							//50  packetsize	  num=100
 		               continue;
-		            read_u32time=Time_sec_u32(drive_illegalstr+18,6);  
+		            read_u32time=Time_sec_u32(drive_illegalstr+18,6);   // 连续驾驶起始时间
+					read_u32_ENDTime=Time_sec_u32(drive_illegalstr+24,6); // 连续驾驶结束时间
 					if(read_u32time>=old2day_u32time)
 					{ 
-					  efftive_counter++;
-					  memset(print_buf,0,sizeof(print_buf));
-					  sprintf(print_buf,"\r\n记录 %d:",efftive_counter);
-					  printer(print_buf); 			  
-					  memcpy(dayin_driver_card+24,drive_illegalstr,18);//6
-					  printer((const char *)dayin_driver_card);
-					   memset(print_buf,0,sizeof(print_buf));
-					  sprintf(print_buf,"\r\n 连续驾驶开始时间: \r\n  20%2d-%d%d-%d%d %d%d:%d%d:%d%d",BCD2HEX(drive_illegalstr[18]),\
-					  BCD2HEX(drive_illegalstr[19])/10,BCD2HEX(drive_illegalstr[19])%10,BCD2HEX(drive_illegalstr[20])/10,BCD2HEX(drive_illegalstr[20])%10,\
-					  BCD2HEX(drive_illegalstr[21])/10,BCD2HEX(drive_illegalstr[21])%10,BCD2HEX(drive_illegalstr[22])/10,BCD2HEX(drive_illegalstr[22])%10,\
-					  BCD2HEX(drive_illegalstr[23])/10,BCD2HEX(drive_illegalstr[23])%10);
-					  printer(print_buf); 
-					  memset(print_buf,0,sizeof(print_buf));
-					  sprintf(print_buf,"\r\n 连续驾驶结束时间: \r\n  20%2d-%d%d-%d%d %d%d:%d%d:%d%d",BCD2HEX(drive_illegalstr[24]),\
-					  BCD2HEX(drive_illegalstr[25])/10,BCD2HEX(drive_illegalstr[25])%10,BCD2HEX(drive_illegalstr[26])/10,BCD2HEX(drive_illegalstr[26])%10,\
-					  BCD2HEX(drive_illegalstr[27])/10,BCD2HEX(drive_illegalstr[27])%10,BCD2HEX(drive_illegalstr[28])/10,BCD2HEX(drive_illegalstr[28])%10,\
-					  BCD2HEX(drive_illegalstr[29])/10,BCD2HEX(drive_illegalstr[29])%10);
-					  printer(print_buf); 
+					  if((read_u32_ENDTime>read_u32time)&&((read_u32_ENDTime-read_u32time)>(4*60*60)))
+					  {  //  结束时间大于起始时间，且差值大于4个小时 
+						  efftive_counter++;
+						  memset(print_buf,0,sizeof(print_buf));
+						  sprintf(print_buf,"\r\n记录 %d:",efftive_counter);
+						  printer(print_buf); 			  
+						  memcpy(dayin_driver_card+24,drive_illegalstr,18);//6
+						  printer((const char *)dayin_driver_card);
+						   memset(print_buf,0,sizeof(print_buf));
+						  sprintf(print_buf,"\r\n 连续驾驶开始时间: \r\n  20%2d-%d%d-%d%d %d%d:%d%d:%d%d",BCD2HEX(drive_illegalstr[18]),\
+						  BCD2HEX(drive_illegalstr[19])/10,BCD2HEX(drive_illegalstr[19])%10,BCD2HEX(drive_illegalstr[20])/10,BCD2HEX(drive_illegalstr[20])%10,\
+						  BCD2HEX(drive_illegalstr[21])/10,BCD2HEX(drive_illegalstr[21])%10,BCD2HEX(drive_illegalstr[22])/10,BCD2HEX(drive_illegalstr[22])%10,\
+						  BCD2HEX(drive_illegalstr[23])/10,BCD2HEX(drive_illegalstr[23])%10);
+						  printer(print_buf); 
+						  memset(print_buf,0,sizeof(print_buf));
+						  sprintf(print_buf,"\r\n 连续驾驶结束时间: \r\n  20%2d-%d%d-%d%d %d%d:%d%d:%d%d",BCD2HEX(drive_illegalstr[24]),\
+						  BCD2HEX(drive_illegalstr[25])/10,BCD2HEX(drive_illegalstr[25])%10,BCD2HEX(drive_illegalstr[26])/10,BCD2HEX(drive_illegalstr[26])%10,\
+						  BCD2HEX(drive_illegalstr[27])/10,BCD2HEX(drive_illegalstr[27])%10,BCD2HEX(drive_illegalstr[28])/10,BCD2HEX(drive_illegalstr[28])%10,\
+						  BCD2HEX(drive_illegalstr[29])/10,BCD2HEX(drive_illegalstr[29])%10);
+						  printer(print_buf); 
+						  find_chaoshi_record=enable; // find  record 
+					  }	  
 
 					}
 			  	}
-										
+
+				if(find_chaoshi_record==0)
+					printer("\r\n无超时驾驶记录\r\n"); 
 			}
 			else
 			   printer("\r\n无超时驾驶记录\r\n"); 

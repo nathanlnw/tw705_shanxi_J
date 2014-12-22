@@ -50,7 +50,7 @@ static void keypress(unsigned int key)
 		case KeyValueMenu:
             if(Sim_Modify_Flag==1)//有字符需要修改
             	{
-            	if(Sim_SetFlag==14)
+            	if(Sim_SetFlag==13)
             		{
 					memset(Menu_sim_Code,0,sizeof(Menu_sim_Code));
 					
@@ -116,15 +116,16 @@ static void keypress(unsigned int key)
 					Sim_SetCounter=0;
 					Sim_Set(0,0);
 					}
-				if(Sim_SetFlag==13)
+				if(Sim_SetFlag==12)
 					{
-					Sim_SetFlag=14;
+					Sim_SetFlag=13;
 					if(MENU_set_carinfor_flag==1)
 						{
 						//rt_kprintf("\r\nSIM 卡号码设置完成，按菜单键返回，%s",Menu_sim_Code);
 						
-						memset(SimID_12D,0,sizeof(SimID_12D));
-						memcpy(SimID_12D,Menu_sim_Code,12);								 
+						memset(SimID_12D,0,sizeof(SimID_12D)); 
+						SimID_12D[0]='0';
+					    memcpy(SimID_12D+1,Menu_sim_Code,11);	  						 
 						DF_WriteFlashSector(DF_SIMID_12D,0,SimID_12D,13); 
 						delay_ms(80); 		  
 						//rt_kprintf("\r\n 显示屏设备SIM_ID设置为 : %s", SimID_12D);   
@@ -134,11 +135,11 @@ static void keypress(unsigned int key)
 						rt_kprintf("\r\n 存储:%s",SimID_12D);
 						}
 					lcd_fill(0);
-					lcd_text12(0,5,(char *)Menu_sim_Code,12,LCD_MODE_SET);
+					lcd_text12(0,5,(char *)Menu_sim_Code,11,LCD_MODE_SET);
 					lcd_text12(13,19,"SIM卡号设置完成",15,LCD_MODE_SET);
 					lcd_update_all();		
 					}
-				else if(Sim_SetFlag==14)
+				else if(Sim_SetFlag==13)
 					{
 					CarSet_0_counter=5;
 					Sim_SetFlag=1;

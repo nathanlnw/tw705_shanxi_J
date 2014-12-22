@@ -952,7 +952,8 @@ extern  VechINFO             Vechicle_Info;     //  车辆信息
 extern  VechINFO     Vechicle_Info_BAK;  //  车辆信息 BAK
 extern  VechINFO     Vechicle_info_BAK2; //  车辆信息BAK2      
 extern  u8           Login_Menu_Flag;	   //	登陆界面 标志位    
-
+extern 	u8			 Limit_max_SateFlag;	  //   速度最大门限限制指令  
+extern 	u8			 INFO_Code_Flag;		  //   信息加密状态位  
 
 
 //------- 北斗扩展协议  ------------
@@ -1374,7 +1375,7 @@ extern void  adjust_ok(int in);
 extern void  write_read(u32 write ,u32 read);
 extern void  type_vech(u8 type);  
 extern void  link_mode(u8 *instr); 
-
+extern void  info_encode(u8 value);
 
 
 //extern u8  RecordSerial_output_Str(const char *fmt,...); 

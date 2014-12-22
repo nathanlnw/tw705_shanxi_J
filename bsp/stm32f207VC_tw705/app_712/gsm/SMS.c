@@ -572,6 +572,13 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 				      index_write(0x11,0);
 				      Add_SMS_Ack_Content(sms_ack_data,ACKstate);	    
 				}
+			 else
+				if(strncmp(pstrTemp,"SPDLIMIT",8)==0)		///8+1.清除疲劳驾驶记录
+				{
+				   Limit_max_SateFlag=sms_content[0]-0x30; 
+		           DF_WriteFlashSector(DF_LimitSPEED_offset,0,&Limit_max_SateFlag,1); 
+				   Add_SMS_Ack_Content(sms_ack_data,ACKstate);	                      
+				}	
 			else if(strncmp(pstrTemp,"DISCLEAR",8)==0)			///9清除里程
 				{
 				   	 DayStartDistance_32=0;
@@ -582,7 +589,7 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 					  JT808Conf_struct.Distance_m_u32=Distance_m_u32;		
 					   Add_SMS_Ack_Content(sms_ack_data,ACKstate);				 
 				}
-            else if(strncmp(pstrTemp,"SPDWARNCLEAR",12)==0)    //  超速报警清除
+            else if(strncmp(pstrTemp,"SPDCLEAR",8)==0)    //  超速报警清除
             	{
             	   #ifdef SPD_WARN_SAVE 
 					 //-----  Record update---- 	
@@ -914,6 +921,18 @@ void   SMS_protocol (u8 *instr,u16 len, u8  ACKstate)   //  ACKstate
 					    Add_SMS_Ack_Content(sms_ack_data,ACKstate);
 					} 
 				}
+			 if(strncmp(pstrTemp,"ENCODE",6)==0)
+			 	{
+			 	   
+				   j=sscanf(sms_content,"%d",&u16Temp);
+				   if(j)
+				   {
+				     info_encode(u16Temp);
+					 Login_Menu_Flag=(u8)u16Temp;	  // clear	first flag	
+					 Add_SMS_Ack_Content(sms_ack_data,ACKstate); 
+			       } 
+
+			 	}
 			 //----------------------------------------------------------------------------
 			} 
 		   else

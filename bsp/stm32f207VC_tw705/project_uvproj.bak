@@ -721,6 +721,11 @@
               <FileType>5</FileType>
               <FilePath>.\app_712\protocol_808\CRC.h</FilePath>
             </File>
+            <File>
+              <FileName>RSA.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app_712\protocol_808\RSA.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1240,6 +1245,11 @@
               <FileName>Menu_TXT.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\app_712\lcd\Menu_TXT.c</FilePath>
+            </File>
+            <File>
+              <FileName>Menu_0_0_mode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app_712\lcd\Menu_0_0_mode.c</FilePath>
             </File>
           </Files>
         </Group>

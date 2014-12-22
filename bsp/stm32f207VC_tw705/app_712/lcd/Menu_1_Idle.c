@@ -136,14 +136,20 @@ if(DEV_Login.Operate_enable==2)
 else
 	lcd_bitmap(72,2,&BMP_link_off, LCD_MODE_SET);
 
-//车辆载重标志
-if(JT808Conf_struct.LOAD_STATE==1)
-	lcd_bitmap(95,2,&BMP_empty, LCD_MODE_SET);
-else if(JT808Conf_struct.LOAD_STATE==2)
-	lcd_bitmap(95,2,&BMP_full_0, LCD_MODE_SET);
-else if(JT808Conf_struct.LOAD_STATE==3)
-	lcd_bitmap(95,2,&BMP_full_1, LCD_MODE_SET);
-
+//车辆载重标志  + 加密
+if(INFO_Code_Flag)
+{
+   lcd_text12(91,0,"jm",2,LCD_MODE_SET);   
+}
+else
+{
+	if(JT808Conf_struct.LOAD_STATE==1)
+		lcd_bitmap(95,2,&BMP_empty, LCD_MODE_SET);
+	else if(JT808Conf_struct.LOAD_STATE==2)
+		lcd_bitmap(95,2,&BMP_full_0, LCD_MODE_SET);
+	else if(JT808Conf_struct.LOAD_STATE==3)
+		lcd_bitmap(95,2,&BMP_full_1, LCD_MODE_SET);
+}
 //电源标志
 if(ModuleStatus&0x04)
 	lcd_bitmap(105,2,&BMP_Battery, LCD_MODE_SET);
@@ -271,7 +277,7 @@ void  Disp_Idle(void)
              memcpy(Dis_speDer+12,"未登录",6);	
 	   	}
 	   else
-       if((VdrData.H_15[0]==0x02)||(GB19056.SPK_SpeedStatus_Abnormal.FiveMin_sec_counter)) // 速度异常  
+       if(((VdrData.H_15[0]==0x02)||(GB19056.SPK_SpeedStatus_Abnormal.FiveMin_sec_counter))&&(Limit_max_SateFlag==0)) // 速度异常  
        {
            memcpy(Dis_speDer+10,"速度异常",8);
 	   }

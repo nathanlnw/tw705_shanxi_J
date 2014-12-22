@@ -24,8 +24,7 @@
 
 #define    ROUTE_DIS_Default            0x3F000000
 
-
-u8 chushilicheng[4]; 
+static u8 XPM[8]="xpm84228"; 
 u8 Setting08[80]="预留 	    车门  	   雾灯  	   近光灯	   远光灯	   右转灯	   左转灯	   刹车 	    ";
 
 
@@ -202,6 +201,8 @@ u16     Spd_adjust_counter=0; // 确保匀速状态计数器
 u16     Spd_Deltacheck_counter=0;   // 传感器速度和脉冲速度相差较大判断
 u16     Former_DeltaPlus[K_adjust_Duration]; // 前几秒的脉冲数 
 u8      Former_gpsSpd[K_adjust_Duration];// 前几秒的速度      
+u8      Illeagle_Data_kickOUT=0;  //  剔除非法数据状态
+
 //-----  车台注册定时器  ----------
 DevRegst   DEV_regist;  // 注册
 DevLOGIN   DEV_Login;   //  鉴权  
@@ -320,6 +321,10 @@ VechINFO     Vechicle_Info;     //  车辆信息
 VechINFO     Vechicle_Info_BAK;  //  车辆信息 BAK
 VechINFO     Vechicle_info_BAK2; //  车辆信息BAK2     
 u8           Login_Menu_Flag=0;       //   登陆界面 标志位
+u8           Limit_max_SateFlag=0;    //   速度最大门限限制指令  
+u8           INFO_Code_Flag=0;        //   信息加密状态位 
+	
+
 
 //------  车门开关拍照 -------
 DOORCamera   DoorOpen;    //  开关车门拍照
@@ -441,6 +446,22 @@ void delay_ms(u16 j )
            DF_delay_us(2000); // 1000
   	} 
 }
+void xpm_encode_cecode(u8 *instr, u8 *outstr, u16 len)
+{
+     u8    j=0,value=0;
+	 u16   i=0;
+
+	  value=0;
+       for(i=0;i<8;i++)
+	   	 value^=XPM[i];
+
+	 for(i=0;i<len;i++)
+	 	{
+              outstr[i]=instr[i]^value;
+	 	}
+
+}
+
 
  u8  Do_SendGPSReport_GPRS(void)   
 {  	
@@ -1109,9 +1130,17 @@ void Speed_pro(u8 *tmpinfo,u8 Invalue,u8 Point)
 		  sp_DISP=sp/100;   //  sp_Disp 单位是 0.1km/h 
 							  
 	         //------------------------------ 通过GPS模块数据获取到的速度 --------------------------------
-            if(Speed_jiade==0)	
-			   Speed_gps=(u16)sp_DISP; 
-
+            if(1==Limit_max_SateFlag)
+			 {
+			   if((sp_DISP>=1200)&&(sp_DISP<1500))
+			   	   sp_DISP=1200;     //  速度大于120 km/h   且小于150 km/h
+			   if(sp_DISP>=1500)
+                    Illeagle_Data_kickOUT=1;  // 速度大于150  剔除 
+			   else
+			   	   Speed_gps=(u16)sp_DISP;
+             }
+			 else
+			    Speed_gps=(u16)sp_DISP;
 
 
         //  Speed_gps=Speed_jiade;//800;  //  假的为了测试    
@@ -1406,8 +1435,11 @@ void  GPS_Delta_DurPro(void)    //告GPS 触发上报处理函数
 	if(UDP_dataPacket_flag==0x02) 
           GB_doubt_Data3_Trigger(lait_old,longi_old,lati_new,longi_new);   
 
-   memcpy((char*)&Gps_Gprs,(char*)&Temp_Gps_Gprs,sizeof(Temp_Gps_Gprs));	 
-
+ 
+   if(Illeagle_Data_kickOUT==0)
+	   memcpy((char*)&Gps_Gprs,(char*)&Temp_Gps_Gprs,sizeof(Temp_Gps_Gprs));   
+   else
+	   Illeagle_Data_kickOUT=0;  // clear  
 
  
 
@@ -1916,7 +1948,7 @@ u8  Protocol_Head(u16 MSG_ID, u8 Packet_Type)
 void Protocol_End(u8 Packet_Type,u8 LinkNum)   
 {                   
  u16 packet_len=0;  
- u16  i=0;		//要发送的UDP 数据内容的长度
+ u16  i=0,j=0;		//要发送的UDP 数据内容的长度
  u8   Gfcs=0;
  u16   Msg_bodyLen=0; //  协议里的消息只表示消息体     不包含消息头 消息头默认长度是12 , 分包消息头长度 20   
  
@@ -1936,6 +1968,19 @@ void Protocol_End(u8 Packet_Type,u8 LinkNum)
      Original_info[2]=(Msg_bodyLen>>8)|0x20 ;  // Bit 13  0x20 就是Bit 13
      Original_info[3]=Msg_bodyLen;  
    }
+	//--- 加密判断处理
+	if(INFO_Code_Flag)
+	{
+	   //  加密属性
+	   Original_info[2]|=0x08;//0x08 就是    bit 11 位  表示 xpm84228 加密 
+       //  加密消息体
+        if(Packet_Divide==Packet_Type)
+			j=16; 
+		else
+			j=12;  
+		//  加密每一个字节
+		xpm_encode_cecode(Original_info+j,Original_info+j,Msg_bodyLen);          
+	}
    //---- 计算校验  -----
    for(i=0;i<Original_info_Wr;i++)  
 		Gfcs^=Original_info[i]; 
@@ -5747,16 +5792,16 @@ void  ISP_file_Check(void)
              else
 				  rt_kprintf("\r\n 硬件版本不匹配!\r\n");    
 			 //firmware
-			 if(strncmp((const char*)ISP_buffer+32+42,"HBGGHYPT",8)==0) 
+			 if(strncmp((const char*)ISP_buffer+32+42,"SXTYXTGGHYPT",12)==0) 
 			 {
 				ISP_judge_resualt++;// step 3
-				rt_kprintf("\r\n  固件版本:HBGGHYPT\r\n");	 
+				rt_kprintf("\r\n  固件版本:SXTYXTGGHYPT\r\n");	 
 			 }
 			 // operater
-			 if(strncmp((const char*)ISP_buffer+32+62,"HBTDT",8)==0) 
+			 if(strncmp((const char*)ISP_buffer+32+62,"SXTYXT",6)==0) 
 			 {
 				ISP_judge_resualt++;// step 4
-				rt_kprintf("\r\n  固件版本:HBTDT\r\n");  	 
+				rt_kprintf("\r\n  固件版本:SXTYXT\r\n");  	 
 			 }
 			 
 		 }
@@ -7322,6 +7367,18 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
 			  	}
 			  return; 
 		  }		  
+     //------- 加密状态检验 ---------
+     if(UDP_HEX_Rx[3]&0x08)   //0x08 就是	bit 11 位  表示 xpm84228 加密
+     {
+      // OutPrint_HEX("加密信息",UDP_HEX_Rx+13,infolen);
+       if(UDP_HEX_Rx[3]&0x20) // 判断是不是分包
+		  xpm_encode_cecode(UDP_HEX_Rx+17,UDP_HEX_Rx+17,infolen);          //分包
+       else
+          xpm_encode_cecode(UDP_HEX_Rx+13,UDP_HEX_Rx+13,infolen);       // 没分包 
+     //  OutPrint_HEX("解密信息",UDP_HEX_Rx+13,infolen);
+      // OutPrint_HEX("解密后完整报文信息",UDP_HEX_Rx,UDP_DecodeHex_Len);  
+     } 
+	//------------------ 加密状态检验  -----------------  
 	  FCS_error_counter=0;// clear
 	//  else		  
 		 // rt_kprintf("\r\n 808协议校验正确	  Caucate %x  ,RX  %x\r\n",FCS_RX_UDP,UDP_HEX_Rx[UDP_DecodeHex_Len-2]);	   
@@ -8927,16 +8984,16 @@ void TCP_RX_Process( u8  LinkNum)  //  ---- 808  标准协议
 										 	 rt_kprintf("\r\n 硬件版本不匹配!\r\n");   
                                         
 										//firmware
-										if(strncmp((const char*)BD_ISP.ContentData+32+42,"HBGGHYPT",8)==0) 
+										if(strncmp((const char*)BD_ISP.ContentData+32+42,"SXTYXTGGHYPT",12)==0) 
 										{
 										   ISP_judge_resualt++;// step 3
-										   rt_kprintf("\r\n  固件版本:HBGGHYPT\r\n");   
+										   rt_kprintf("\r\n  固件版本:SXTYXTGGHYPT\r\n");   
 										}
 										// operater
-										if(strncmp((const char*)BD_ISP.ContentData+32+62,"HBTDT",5)==0)  
+										if(strncmp((const char*)BD_ISP.ContentData+32+62,"SXTYXT",6)==0)   
 										{
 										   ISP_judge_resualt++;// step 4
-										   rt_kprintf("\r\n  固件版本:HBTDT\r\n");      
+										   rt_kprintf("\r\n  固件版本:SXTYXT\r\n");      
 										}
 										
                                    	}
@@ -11011,4 +11068,15 @@ void rd_spdwarn(void)
 FINSH_FUNCTION_EXPORT(rd_spdwarn,rd_spdwarn(0));   
 #endif
 
+
+ void  info_encode(u8 value)
+{
+	//	-----信息加密状态		
+	INFO_Code_Flag=value;	  //  输入界面为0 
+	DF_WriteFlashSector(DF_INFO_CODE_offset,0,&INFO_Code_Flag,1);  
+	rt_kprintf("\r\n  消息加密使能=%d\r\n",INFO_Code_Flag);
+	idip("clear");
+
+}
+FINSH_FUNCTION_EXPORT(info_encode,info_encode);
 // C.  Module

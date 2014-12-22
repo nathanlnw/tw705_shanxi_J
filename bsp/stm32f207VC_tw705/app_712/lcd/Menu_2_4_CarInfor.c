@@ -74,9 +74,9 @@ switch(drivercar)
 		 break;
 	case 4:  //  …Ë±∏ID
         lcd_fill(0);
-        memcpy(device_ID+7,DeviceNumberID,12); 
+        memcpy(device_ID+7,SimID_12D,12); 
         lcd_text12(0,3,(char *)device_ID,19,LCD_MODE_SET);
-		memcpy(device_ID_7+7,DeviceNumberID+5,7); 
+		memcpy(device_ID_7+7,SimID_12D+5,7); 
         lcd_text12(0,18,(char *)device_ID_7,14,LCD_MODE_SET);
         lcd_update_all();   
 		 break;
